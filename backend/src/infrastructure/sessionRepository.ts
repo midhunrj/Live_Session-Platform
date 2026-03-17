@@ -4,6 +4,7 @@ import { Session } from "../domain/entities/session";
 import { SessionParticipant } from "../domain/entities/sessionParticipant";
 import { SessionData } from "./database/sessionModel";
 import { SessionParticipantModel } from "./database/sessionParticipantSchema";
+import { userModel } from "./database/userModel";
 
 export class SessionRepository implements ISessionRepository {
    async createSession(session:Session):Promise<Session>
@@ -68,8 +69,33 @@ export class SessionRepository implements ISessionRepository {
     
     const activeSessions=await SessionData.find({ status: "active" });
     console.log("activesession from repository",activeSessions);
-    return activeSessions
+    const hostIds = [...new Set(activeSessions.map(s => s.hostId))];
+    
+
+    const hosts = await userModel.find({ 
+      _id: { $in: hostIds } 
+    }).lean();
+    
+    const hostMap = new Map(
+      hosts.map(host => [host._id.toString(), host])
+    );
+    
+     return activeSessions.map(session => ({
+    _id: session._id.toString(),
+    hostId: session.hostId,
+    title: session.title,
+    description: session.description || '',
+    status: session.status as "active" | "ended",
+    startedAt: session.startedAt,
+    endedAt: session.endedAt || undefined,
+    totalViewers: session.totalViewers || 0,
+    totalCredits: session.totalCredits || 0,
+    profiles: {
+      userName: hostMap.get(session.hostId)?.userName || 'Unknown'
+    }
+  }));
   }
+  
 
 async removeParticipant(sessionId: string, userId: string): Promise<void> {
   await SessionParticipantModel.findOneAndDelete({

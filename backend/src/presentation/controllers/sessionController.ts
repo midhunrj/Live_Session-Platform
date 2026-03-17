@@ -150,7 +150,8 @@ async leaveSession(req: Request, res: Response) {
       const { sessionId } = req.params;
 
       const viewers = await this.sessionStats.getViewerCount(sessionId as string);
-
+        console.log(viewers,"viewers");
+        
       return res.status(200).json({
         success: true,
         count: viewers

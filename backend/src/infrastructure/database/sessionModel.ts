@@ -5,11 +5,11 @@ const sessionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  title: {              // Add this field
+  title: {              
     type: String,
     required: true
   },
-  description: {        // Add this field
+  description: {       
     type: String,
     default: ""
   },
