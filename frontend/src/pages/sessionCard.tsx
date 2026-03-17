@@ -25,11 +25,20 @@ const SessionCard=({ session, onJoin }: SessionCardProps)=> {
   return (
     <div className="bg-slate-50 rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-all cursor-pointer group">
       <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
+        <div className="flex-1 h-72">
           <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">
             {session.title}
           </h3>
-          <p className="text-sm text-slate-600 line-clamp-2">{session.description}</p>
+          <div className="mb-4 flex-grow overflow-hidden">
+        <p className="text-slate-600 text-sm break-words overflow-hidden" 
+           style={{ 
+             wordBreak: 'break-word',
+             overflowWrap: 'break-word',
+             hyphens: 'auto'
+           }}>
+          {session.description || 'No description provided.'}
+        </p>
+        </div>
         </div>
         <div className="flex items-center gap-1 bg-green-500 px-2 py-1 rounded-full ml-2">
           <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
