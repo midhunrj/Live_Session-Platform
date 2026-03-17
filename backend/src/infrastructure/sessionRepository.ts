@@ -85,5 +85,20 @@ async decrementViewers(sessionId: string): Promise<void> {
     { $inc: { totalViewers: -1 } }
   );
 }
+
+async findByHostId(hostId: string): Promise<Session[]> {
+
+  const sessions = await SessionData.find({ hostId }).sort({ createdAt: -1 });
+
+   return sessions.map(session => {
+      const sessionObj = session.toObject();
+      return {
+        ...sessionObj,
+        _id: sessionObj._id,
+        endedAt: sessionObj.endedAt || undefined 
+      } as Session;
+    });
+
+}
   
 }

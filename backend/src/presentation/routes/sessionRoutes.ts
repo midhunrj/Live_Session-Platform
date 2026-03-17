@@ -39,7 +39,7 @@ sessionRouter.get("/:sessionId", sessionController.getSessionStats.bind(sessionC
 sessionRouter.get("/:sessionId/viewers", sessionController.getViewerCount.bind(sessionController));
 
 
-// sessionRouter.get("/host/:hostId", sessionController.getHostSessions.bind(sessionController));
+ sessionRouter.get("/host/:hostId", sessionController.getHostSessions.bind(sessionController));
 
 // // Get active session for a specific host
 // sessionRouter.get("/host/:hostId/active", sessionController.getActiveHostSession.bind(sessionController));

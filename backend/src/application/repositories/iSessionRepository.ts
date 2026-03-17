@@ -5,6 +5,7 @@ export interface ISessionRepository {
     createSession(session:Session):Promise<Session>
     endsession(sessionId:string):Promise<void>
     findById(sessionId:string):Promise<Session|null>
+    findByHostId(hostId: string): Promise<Session[]>;
     findActiveSessionByHost(hostId: string): Promise<Session | null>
     incrementViewers(sessionId:string):Promise<void>
     addCredits(sessionId:string,credits:number):Promise<void>

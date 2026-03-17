@@ -7,7 +7,7 @@ interface AuthContextType {
   userAuthenticated: boolean;
   setUserAuthenticated: (value: boolean) => void;
   user: User | null;
-  setLogin:(email:string,password:string)=>Promise<void>
+  setLogin:(email:string,password:string)=>Promise<User>
   setRegister:(user:User)=>Promise<void>    
   setUser: (user: User | null) => void;
   logout:()=>void
@@ -53,7 +53,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     setUser(newUser)
   }
 
-  const setLogin = async (email: string, password: string) => {
+  const setLogin = async (email: string, password: string):Promise<User> => {
   try {
     // Remove localStorage validation - let the backend handle authentication
     const loggedUser:User = await loginUser({ email, password });

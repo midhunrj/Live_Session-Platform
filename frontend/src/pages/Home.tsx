@@ -38,18 +38,8 @@ const Home=()=> {
       setLoading(false);
     }
   };
-  // const loadActiveSessions = async () => {
-  //   const { data, error } = await supabase
-  //     .from('sessions')
-  //     .select('*, users!sessions_host_id_fkey(full_name)')
-  //     .eq('status', 'active')
-  //     .order('started_at', { ascending: false });
+console.log(user,"userData in dashboard");
 
-  //   if (!error && data) {
-  //     setActiveSessions(data as Session[]);
-  //   }
-  //   setLoading(false);
-  // };
 
   if (selectedSession) {
     return (
@@ -66,13 +56,13 @@ const Home=()=> {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Live Sessions</h1>
-            <p className="text-slate-600 mt-1">Welcome, {user?.userName}</p>
+            <p className="text-slate-600 mt-1">Welcome, {user?.data?.userName}</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
               <div className="flex items-center gap-2">
                 <Coins className="text-yellow-500" size={20} />
-                <span className="font-semibold text-slate-900">{user?.creditBalance}</span>
+                <span className="font-semibold text-slate-900">{user?.data?.creditBalance}</span>
                 <span className="text-sm text-slate-600">credits</span>
               </div>
             </div>

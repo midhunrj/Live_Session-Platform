@@ -3,7 +3,7 @@ import { Video, VideoOff, Users, Coins, LogOut, TrendingUp } from "lucide-react"
 import { useAuthContext } from "../context/authContext";
 import type { Session } from "../types/userAuth";
 import { useNavigate } from "react-router-dom";
-import { createSession } from "../services/sessionService";
+import { createSession, getHostSessions } from "../services/sessionService";
 
 const HostPage = () => {
 
@@ -35,8 +35,29 @@ const HostPage = () => {
 
   }, [activeSession]);
 
+  useEffect(() => {
+
+  const fetchSessions = async () => {
+
+    const hostId = getRealUserId();
+
+    if (!hostId) return;
+
+    const res = await getHostSessions(hostId);
+      console.log(res,"result of sessions by host")
+    setSessions(...sessions,res?.data);
+
+  };
+
+  fetchSessions();
+
+}, []);
+
+console.log(activeSession,"Activesession");
+console.log(sessions,"sessions");
 
 
+console.log(user,"userData in hostpage");
   const startSession = async(e:React.FormEvent<HTMLFormElement>) => {
 
     e.preventDefault();
@@ -102,7 +123,7 @@ const setLogout=()=>
             </h1>
 
             <p className="text-slate-600 mt-1">
-              Welcome back, {user?.userName}
+              Welcome back, {user?.data?.userName}
             </p>
 
           </div>
@@ -117,7 +138,7 @@ const setLogout=()=>
                 <Coins className="text-yellow-500" size={20} />
 
                 <span className="font-semibold">
-                  {user?.creditBalance}
+                  {user?.data?.creditBalance}
                 </span>
 
                 <span className="text-sm text-slate-600">
@@ -233,6 +254,8 @@ const setLogout=()=>
 
 
             <form onSubmit={startSession} className="space-y-4">
+              
+              
 
               <input
                 value={title}
@@ -291,16 +314,20 @@ const setLogout=()=>
 
               <div
                 key={session._id}
-                className="border rounded-lg p-4 mb-4"
+                className="border rounded-lg p-4 mb-4 space-y-2"
               >
 
-                <h3 className="font-bold">
+                <h3 className="font-bold text-lg">
                   {session.title}
                 </h3>
 
-                <p>{session.description}</p>
+                <div className="w-full">
+                   <p className="text-slate-600 break-words whitespace-pre-wrap">
+                     {session.description}
+                   </p>
+                </div>
 
-                <p>Status: {session.status}</p>
+                <p className="font-bold flex justify-start gap-2">Status: <caption className="text-green-600"> {session.status}</caption></p>
 
               </div>
 

@@ -187,5 +187,26 @@ async leaveSession(req: Request, res: Response) {
 
     }
   }    
+  
+  async getHostSessions(req: Request, res: Response) {
+  try {
 
+    const { hostId } = req.params;
+
+    const sessions = await this.sessionStats.getSessionsByHost(hostId as string);
+
+    return res.status(200).json({
+      success: true,
+      data: sessions
+    });
+
+  } catch (error: any) {
+
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+}
 }

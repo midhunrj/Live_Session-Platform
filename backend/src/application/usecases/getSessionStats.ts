@@ -1,3 +1,5 @@
+import { Session } from "../../domain/entities/session";
+
 export class SessionStats {
   constructor(private sessionRepo: any) {}
 
@@ -13,4 +15,12 @@ export class SessionStats {
   async getActiveSessions() {
     return this.sessionRepo.findActiveSessions();
   }
+   
+  async getSessionsByHost(hostId: string):Promise<Session[]|[]> {
+
+  const sessions = await this.sessionRepo.findByHostId(hostId);
+
+  return sessions;
+
+}
 }

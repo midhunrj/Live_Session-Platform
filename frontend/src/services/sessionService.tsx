@@ -8,7 +8,7 @@ export const createSession = async (sessionData:Session): Promise<Session> => {
   return res.data;
 };
 
-// Get all sessions for a host
+
 export const getHostSessions = async (hostId: string): Promise<Session[]> => {
   const res = await userServices.get(`/session/host/${hostId}`);
   return res.data;
