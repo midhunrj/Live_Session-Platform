@@ -6,9 +6,11 @@ export interface ISessionRepository {
     endsession(sessionId:string):Promise<void>
     findById(sessionId:string):Promise<Session|null>
     findByHostId(hostId: string): Promise<Session[]>;
+    findActiveSessions():Promise<any[]>
     findActiveSessionByHost(hostId: string): Promise<Session | null>
     incrementViewers(sessionId:string):Promise<void>
     addCredits(sessionId:string,credits:number):Promise<void>
+    findParticipant(sessionId: string, userId: string): Promise<SessionParticipant | null>
     addParticipant(sessionId:string,userId:string):Promise<SessionParticipant>
     removeParticipant(sessionId: string, userId: string): Promise<void>
     decrementViewers(sessionId: string): Promise<void>

@@ -9,11 +9,17 @@ export class JoinSessionUsecase {
       throw new Error("Session not active");
     }
 
+    const existingParticipant = await this.sessionRepo.findParticipant(sessionId, userId);
+    if (existingParticipant) {
+      console.log("User already in session");
+      return; 
+    }
+
     await this.sessionRepo.addParticipant(sessionId, userId);
 
     await this.sessionRepo.incrementViewers(sessionId);
   }
-  // In joinSession.ts
+
 async leaveSession(sessionId: string, userId: string) {
   const session = await this.sessionRepo.findById(sessionId);
   

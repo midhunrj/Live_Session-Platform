@@ -58,6 +58,14 @@ export class SessionRepository implements ISessionRepository {
         )
       }
 
+      async findParticipant(sessionId: string, userId: string): Promise<SessionParticipant | null> {
+  return await SessionParticipantModel.findOne({
+    sessionId,
+    userId,
+    leftAt: null
+  });
+}
+
       async addParticipant(sessionId: string, userId: string):Promise<SessionParticipant> {
     return SessionParticipantModel.create({
       sessionId,
@@ -65,7 +73,7 @@ export class SessionRepository implements ISessionRepository {
     });
   }
 
-  async findActiveSessions() {
+  async findActiveSessions():Promise<any[]> {
     
     const activeSessions=await SessionData.find({ status: "active" });
     console.log("activesession from repository",activeSessions);
