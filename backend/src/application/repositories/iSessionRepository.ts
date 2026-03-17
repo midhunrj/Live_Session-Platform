@@ -3,7 +3,7 @@ import { SessionParticipant } from "../../domain/entities/sessionParticipant";
 
 export interface ISessionRepository {
     createSession(session:Session):Promise<Session>
-    endsession(sessionId:string):Promise<void>
+    endSession(sessionId:string):Promise<void>
     findById(sessionId:string):Promise<Session|null>
     findByHostId(hostId: string): Promise<Session[]>;
     findActiveSessions():Promise<any[]>

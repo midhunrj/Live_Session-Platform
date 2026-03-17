@@ -1,4 +1,5 @@
 
+import mongoose from "mongoose";
 import { ISessionRepository } from "../application/repositories/iSessionRepository"
 import { Session } from "../domain/entities/session";
 import { SessionParticipant } from "../domain/entities/sessionParticipant";
@@ -25,21 +26,28 @@ export class SessionRepository implements ISessionRepository {
       throw error;
     }
    }
-    async endsession(sessionId:string):Promise<void>
+    async endSession(sessionId:string):Promise<void>
     {
+      console.log("it will end now");
+      
          await  SessionData.findByIdAndUpdate(sessionId, {
       status: "ended",
       endedAt: new Date()
     });
+
+    console.log("i am taking leave");
+    
     }
     async findById(sessionId:string):Promise<Session|null>
     {
        const session_id=await SessionData.findById(sessionId)
+       console.log("return findbyid",session_id);
+       
        return session_id as any
     }
     async findActiveSessionByHost(hostId: string): Promise<Session | null>
     {
-       const session=await SessionData.findOne({hostId,status:"Active"})
+       const session=await SessionData.findOne({hostId,status:"active"})
        console.log(session,"session active data");
        
        return session as Session
@@ -134,5 +142,30 @@ async findByHostId(hostId: string): Promise<Session[]> {
     });
 
 }
+
+
+async getParticipants(sessionId: string) {
+  console.log("growel", sessionId);
   
+  try {
+
+    if (!mongoose.Types.ObjectId.isValid(sessionId)) {
+      console.error("Invalid sessionId format:", sessionId);
+      return [];
+    }
+    
+    const objectId = new mongoose.Types.ObjectId(sessionId);
+    
+    const participantList = await SessionParticipantModel.find({
+      sessionId: objectId, 
+      leftAt: null
+    }).populate({path:"userId",model:'user',select: "userName"});
+
+    console.log(participantList, "participantlist");
+    return participantList;
+  } catch (error) {
+    console.error("Error getting participants:", error);
+    return [];
+  }
+}
 }

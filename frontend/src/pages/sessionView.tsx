@@ -25,26 +25,9 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
   const [participantId, setParticipantId] = useState<string | null>(null);
   const [hasJoined,setHasJoined]=useState<Boolean>(false)
 
-  // useEffect(() => {
-  //   handleJoinSession();
-  //   loadViewerCount();
-  //   loadTransactions();
-  //   loadSessionStats();
-
-  //   const interval = setInterval(() => {
-  //     loadViewerCount();
-  //     loadSessionStats();
-  //     loadTransactions();
-  //   }, 3000);
-
-  //   return () => {
-  //     clearInterval(interval);
-  //     handleLeaveSession();
-  //   };
-  // }, []);
 
   useEffect(() => {
-    // Only run once on mount
+
     const initializeSession = async () => {
       await handleJoinSession();
       await Promise.all([
@@ -205,14 +188,14 @@ const getUserId = () => {
                     <TrendingUp className="text-green-600" size={20} />
                     <span className="text-sm font-medium text-slate-600">Total Viewers</span>
                   </div>
-                  <p className="text-2xl font-bold text-slate-900">{sessionStats.totalViewers}</p>
+                  <p className="text-2xl font-bold text-slate-900">{sessionStats.data?.totalViewers}</p>
                 </div>
                 <div className="bg-yellow-50 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Coins className="text-yellow-600" size={20} />
                     <span className="text-sm font-medium text-slate-600">Credits</span>
                   </div>
-                  <p className="text-2xl font-bold text-slate-900">{sessionStats.totalCredits}</p>
+                  <p className="text-2xl font-bold text-slate-900">{sessionStats.data?.totalCredits}</p>
                 </div>
               </div>
             </div>

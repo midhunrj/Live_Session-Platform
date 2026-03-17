@@ -55,10 +55,12 @@ export class SessionController {
   async endSession(req: Request, res: Response) {
     try {
 
-      const { sessionId } = req.body;
-
-      await this.endOfSession.endSession(sessionId);
-
+      const { sessionId } = req.params;
+        console.log("going to end");
+        
+      await this.endOfSession.endSession(sessionId as string);
+       console.log("love you 300 bye bye");
+       
       return res.status(200).json({
         success: true,
         message: "Session ended successfully"
@@ -210,4 +212,32 @@ async leaveSession(req: Request, res: Response) {
 
   }
 }
+
+async getParticipants(req: Request, res: Response) {
+  try {
+    const { sessionId } = req.params;
+
+    if (!sessionId) {
+      return res.status(400).json({
+        success: false,
+        message: "Session ID is required"
+      });
+    }
+
+    const participants = await this.sessionStats.getParticipants(sessionId as string);
+      console.log(participants,"participants");
+      
+    return res.status(200).json({
+      success: true,
+      data: participants
+    });
+
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
 }

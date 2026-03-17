@@ -3,7 +3,7 @@ import { Video, VideoOff, Users, Coins, LogOut, TrendingUp } from "lucide-react"
 import { useAuthContext } from "../context/authContext";
 import type { Session } from "../types/userAuth";
 import { useNavigate } from "react-router-dom";
-import { createSession, getHostSessions } from "../services/sessionService";
+import { createSession, endingSession, getHostSessions, getParticipants, getSessionStats } from "../services/sessionService";
 
 const HostPage = () => {
 
@@ -16,6 +16,7 @@ const HostPage = () => {
   const [description, setDescription] = useState("");
 
   const [activeViewers, setActiveViewers] = useState(0);
+  const [participants, setParticipants] = useState<any[]>([]);
   const [error, setError] = useState("");
   const navigate=useNavigate()
   const getRealUserId = () => {
@@ -23,34 +24,170 @@ const HostPage = () => {
     
     return user?.data?._id || user?._id;
   };
-  useEffect(() => {
-    if (activeSession) {
+//   useEffect(() => {
+//   if (!activeSession?._id) return;
 
-      const interval = setInterval(() => {
-        setActiveViewers((prev) => prev + Math.floor(Math.random() * 2));
-      }, 3000);
+//   const interval = setInterval(async () => {
+//     const res = await getSessionStats(activeSession?._id!);
+//     setActiveViewers(res.data.totalViewers);
+//   }, 3000);
 
-      return () => clearInterval(interval);
+//   return () => clearInterval(interval);
+// }, [activeSession]);
+
+// useEffect(() => {
+//   if (!activeSession?._id) return;
+
+//   const fetchParticipants = async () => {
+//     const res = await getParticipants(activeSession._id!);
+//     setParticipants(res.data);
+//   };
+
+//   fetchParticipants();
+// }, [activeSession]);
+
+// useEffect(() => {
+//   if (!activeSession?._id) return;
+
+//   const interval = setInterval(async () => {
+
+//     try {
+//       const statsRes = await getSessionStats(activeSession._id!);
+//       console.log(statsRes,"status response");
+      
+//       setActiveViewers(statsRes.data.totalViewers);
+
+//       setActiveSession(prev =>
+//         prev ? {
+//           ...prev,
+//           totalCredits: statsRes.data.totalCredits,
+//           totalViewers: statsRes.data.totalViewers
+//         } : prev
+//       );
+
+//     } catch (err) {
+//       console.error("Stats error", err);
+//     }
+
+//     try {
+//       console.log("heiloo");
+      
+//       const participantsRes = await getParticipants(activeSession._id!);
+//       console.log("participant response",participantsRes);
+      
+//       setParticipants(participantsRes.data);
+//     } catch (err) {
+//       console.error("Participants error", err);
+//     }
+
+//   }, 3000);
+
+//   return () => clearInterval(interval);
+
+// }, [activeSession]);
+
+useEffect(() => {
+  if (!activeSession?._id) return;
+
+  const interval = setInterval(async () => {
+    try {
+      const statsRes = await getSessionStats(activeSession._id!);
+      console.log(statsRes, "status response");
+      
+      setActiveViewers(statsRes.data.totalViewers);
+      setActiveSession(prev =>
+        prev ? {
+          ...prev,
+          totalCredits: statsRes.data.totalCredits,
+          totalViewers: statsRes.data.totalViewers
+        } : prev
+      );
+    } catch (err) {
+      console.error("Stats error", err);
     }
 
-  }, [activeSession]);
+    try {
+      console.log("heiloo");
+      const participantsRes = await getParticipants(activeSession._id!);
+      console.log("participant response", participantsRes);
+      
+      if (participantsRes?.data && Array.isArray(participantsRes.data)) {
+        setParticipants(participantsRes.data);
+      } else if (Array.isArray(participantsRes)) {
+        setParticipants(participantsRes);
+      } else {
+        setParticipants([]);
+      }
+    } catch (err) {
+      console.error("Participants error", err);
+      setParticipants([]); 
+    }
+  }, 3000);
 
-  useEffect(() => {
+  return () => clearInterval(interval);
+}, [activeSession]);
 
+//   useEffect(() => {
+
+//   const fetchSessions = async () => {
+
+//     const hostId = getRealUserId();
+
+//     if (!hostId) return;
+
+//     const res = await getHostSessions(hostId);
+//       console.log(res,"result of sessions by host")
+//     setSessions(...sessions,res?.data);
+
+//   };
+
+//   fetchSessions();
+
+// }, []);
+
+// useEffect(() => {
+//   const fetchSessions = async () => {
+//     const hostId = getRealUserId();
+//     if (!hostId) return;
+
+//     const res = await getHostSessions(hostId);
+//     setSessions(res.data);
+
+//     // Restore active session
+//     const active = res.data.find((s: Session) => s.status === "active");
+//     if (active) {
+//       setActiveSession(active);
+//     }
+//   };
+
+//   fetchSessions();
+// }, []);
+
+useEffect(() => {
   const fetchSessions = async () => {
-
     const hostId = getRealUserId();
-
     if (!hostId) return;
 
-    const res = await getHostSessions(hostId);
-      console.log(res,"result of sessions by host")
-    setSessions(...sessions,res?.data);
+    try {
+      const res = await getHostSessions(hostId);
+      console.log("result of sessions by host", res);
+      
+      // Handle different response structures
+      const sessionsData = res?.data || res || [];
+      setSessions(Array.isArray(sessionsData) ? sessionsData : []);
 
+
+      const active = sessionsData.find((s: Session) => s.status === "active");
+      if (active) {
+        setActiveSession(active);
+      }
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+      setSessions([]);
+    }
   };
 
   fetchSessions();
-
 }, []);
 
 console.log(activeSession,"Activesession");
@@ -76,9 +213,11 @@ console.log(user,"userData in hostpage");
       totalCredits: 0,
       startedAt: new Date()
     };
-     await createSession(newSession)
-    setActiveSession(newSession);
-    setSessions((prev) => [newSession, ...prev]);
+const res = await createSession(newSession);
+console.log("res in host page",res);
+
+setActiveSession(res.data);
+setSessions((prev) => [res.data, ...prev]);
 
     setTitle("");
     setDescription("");
@@ -91,29 +230,33 @@ const setLogout=()=>
   navigate('/')
 }
 
-  const endSession = () => {
+  const endSession = async () => {
+  if (!activeSession?._id) return;
 
-    if (!activeSession) return;
+  try {
+    await endingSession(activeSession._id);
 
-    const updatedSessions:Session[] = sessions.map((s:Session) =>
+    const updatedSessions = sessions.map((s) =>
       s._id === activeSession._id
-        ? { ...s, status: "ended", ended_at: new Date().toISOString() }
+        ? { ...s, status: "ended" as const, endedAt: new Date() }
         : s
     );
 
     setSessions(updatedSessions);
     setActiveSession(null);
     setActiveViewers(0);
-  };
 
-
+  } catch (err) {
+    console.error("Error ending session", err);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
 
       <div className="max-w-7xl mx-auto p-6">
 
-        {/* HEADER */}
+
 
         <div className="flex justify-between items-center mb-8">
 
@@ -183,7 +326,7 @@ const setLogout=()=>
 
               </div>
 
-              <span className="bg-green-100 text-green-700 px-4 py-1 rounded-full">
+              <span className="bg-green-100 text-green-700 font-bold px-4 py-2 my-6 text-center  rounded-full">
                 LIVE
               </span>
 
@@ -238,7 +381,7 @@ const setLogout=()=>
               onClick={endSession}
               className="w-full bg-red-600 text-white py-3 rounded-lg"
             >
-              <VideoOff size={20} className="inline mr-2" />
+              <VideoOff size={20} className="inline mr-2 cursor-pointer" />
               End Session
             </button>
 
@@ -295,7 +438,6 @@ const setLogout=()=>
 
 
 
-        {/* SESSION HISTORY */}
 
         <div className="bg-white rounded-2xl shadow-lg p-8">
 
@@ -327,8 +469,20 @@ const setLogout=()=>
                    </p>
                 </div>
 
-                <p className="font-bold flex justify-start gap-2">Status: <caption className="text-green-600"> {session.status}</caption></p>
+                <p className="font-bold flex justify-start gap-2">Status: <span className="text-green-600"> {session.status}</span></p>
+                  {activeSession?._id === session._id && (
+  <div className="bg-slate-50 rounded-xl p-4">
+    <p className="font-bold mb-2">Participants</p>
 
+    {participants.length === 0 ? (
+      <p>No users joined</p>
+    ) : (
+      participants.map((p) => (
+        <p key={p.userId}>{p.userName}</p>
+      ))
+    )}
+  </div>
+)}
               </div>
 
             ))

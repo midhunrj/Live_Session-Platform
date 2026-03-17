@@ -23,4 +23,8 @@ export class SessionStats {
   return sessions;
 
 }
+
+async getParticipants(sessionId: string) {
+  return await this.sessionRepo.getParticipants(sessionId);
+}
 }
