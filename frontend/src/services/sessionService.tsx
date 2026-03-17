@@ -37,5 +37,7 @@ export const leaveSession = async (sessionId: string, userId: string) => {
 
 export const getViewerCount = async (sessionId: string): Promise<number> => {
   const res = await userServices.get(`/session/${sessionId}/viewers`);
+  console.log("res data from view count",res);
+  
   return res.data.count;
 };

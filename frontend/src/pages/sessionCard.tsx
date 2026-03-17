@@ -4,7 +4,7 @@ import type { Session } from '../types/userAuth';
 import { getViewerCount } from '../services/sessionService';
 
 interface SessionCardProps {
-  session: Session & { profiles?: { full_name: string } };
+  session: Session & { profiles?: { userName: string } };
   onJoin: () => void;
 }
 
@@ -16,7 +16,9 @@ const SessionCard=({ session, onJoin }: SessionCardProps)=> {
     const interval = setInterval(loadViewers, 5000);
     return () => clearInterval(interval);
   }, [session._id]);
-
+    
+  console.log(session,"sessionData with profile");
+  
 
   const loadViewers = async () => {
     const count = await getViewerCount(session._id!);
@@ -25,12 +27,12 @@ const SessionCard=({ session, onJoin }: SessionCardProps)=> {
   return (
     <div className="bg-slate-50 rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-all cursor-pointer group">
       <div className="flex items-start justify-between mb-4">
-        <div className="flex-1 h-72">
+        <div className="flex-1 h-60 md:h-72">
           <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">
             {session.title}
           </h3>
           <div className="mb-4 flex-grow overflow-hidden">
-        <p className="text-slate-600 text-sm break-words overflow-hidden" 
+        <p className="text-slate-600 text-sm break-words overflow-hidden line-clamp-6 md:line-clamp-none" 
            style={{ 
              wordBreak: 'break-word',
              overflowWrap: 'break-word',
@@ -50,7 +52,7 @@ const SessionCard=({ session, onJoin }: SessionCardProps)=> {
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-600">Host:</span>
           <span className="font-semibold text-slate-900">
-            {session.profiles?.full_name || 'Unknown'}
+            {session.profiles?.userName || 'Unknown'}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm">
@@ -58,7 +60,7 @@ const SessionCard=({ session, onJoin }: SessionCardProps)=> {
             <Users size={16} />
             <span>Viewers:</span>
           </div>
-          <span className="font-semibold text-slate-900">{viewerCount}</span>
+          <span className="font-semibold text-slate-900">{session.totalViewers}</span>
         </div>
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-1 text-slate-600">
