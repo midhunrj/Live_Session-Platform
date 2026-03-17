@@ -32,9 +32,9 @@ export class SessionController {
 
       let { hostId } = req.body;
       console.log(req.body,"rsnnksnk");
-      hostId=req.body._id
+      hostId=req.body.hostId
 
-      const session = await this.startingSession.startSession(hostId,req.body as any);
+      const session = await this.startingSession.startSession(hostId,req.body as Session);
       console.log("returning new session data",session);
       
       return res.status(201).json({
@@ -80,9 +80,12 @@ export class SessionController {
 
       const { sessionId } = req.params;
       const { userId } = req.body;
+      console.log("red gii",req.body,req.params);
+      
 
       await this.joiningSession.JoinSession(sessionId as string, userId);
-
+      console.log("confirming join session");
+      
       return res.status(200).json({
         success: true,
         message: "User joined session"
@@ -97,6 +100,27 @@ export class SessionController {
 
     }
   };
+
+async leaveSession(req: Request, res: Response) {
+  try {
+    const { sessionId } = req.params;
+    const { userId } = req.body;
+    
+    console.log("Leaving session:", sessionId, "User:", userId);
+    
+    await this.joiningSession.leaveSession(sessionId as string, userId);
+    
+    return res.status(200).json({
+      success: true,
+      message: "User left session"
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
 
   async getSessionStats(req: Request, res: Response){
    try {

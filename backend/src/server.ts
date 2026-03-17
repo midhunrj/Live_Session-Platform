@@ -24,7 +24,7 @@ app.use(cors(corsOptions))
 connectDB()
 
 app.use('/',userRouter)
-app.use('/credit',creditRouter)
+app.use('/credits',creditRouter)
 app.use('/session',sessionRouter)
 const port = process.env.PORT
 app.listen(port,()=>{

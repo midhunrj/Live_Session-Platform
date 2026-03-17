@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const creditTransactionSchema = new mongoose.Schema({
+const TransactionSchema = new mongoose.Schema({
   sessionId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Session",
@@ -30,7 +30,7 @@ const creditTransactionSchema = new mongoose.Schema({
   }
 });
 
-export const CreditTransactionModel = mongoose.model(
+export const TransactionModel = mongoose.model(
   "CreditTransaction",
-  creditTransactionSchema
+  TransactionSchema
 );

@@ -16,8 +16,8 @@ import mongoose from "mongoose";
 export interface Session {
   _id?: mongoose.Types.ObjectId;
   hostId: string;
-  title: string;           // Add this
-  description?: string;     // Add this (optional)
+  title: string;          
+  description?: string;     
   status: "active" | "ended";
   startedAt: Date;
   endedAt?: Date;

@@ -28,8 +28,10 @@ const Home=()=> {
 
     const loadSessions = async () => {
     try {
-      const data = await getActiveSessions();
-      setActiveSessions(data);
+      const res = await getActiveSessions();
+      console.log("res data",res);
+      
+      setActiveSessions(res);
     } catch (error) {
       console.error("Failed to load sessions");
     } finally {

@@ -47,7 +47,7 @@ const  Login=()=> {
 
   return (
     <div className="flex justify-center">
-    <div className="bg-white rounded-2xl   shadow-xl w-full max-w-3xl min-h-screen p-8 my-8">
+    <div className="bg-white rounded-2xl   shadow-2xl w-full max-w-2xl min-h-screen p-8 my-8">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-slate-900">Live Session Platform</h1>
         <p className="text-slate-600">Sign in to your account</p>

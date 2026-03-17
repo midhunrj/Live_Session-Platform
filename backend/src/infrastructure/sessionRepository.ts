@@ -68,6 +68,22 @@ export class SessionRepository implements ISessionRepository {
     
     const activeSessions=await SessionData.find({ status: "active" });
     console.log("activesession from repository",activeSessions);
-    
+    return activeSessions
   }
+
+async removeParticipant(sessionId: string, userId: string): Promise<void> {
+  await SessionParticipantModel.findOneAndDelete({
+    sessionId,
+    userId,
+    leftAt: null
+  });
+}
+
+async decrementViewers(sessionId: string): Promise<void> {
+  await SessionData.findByIdAndUpdate(
+    sessionId,
+    { $inc: { totalViewers: -1 } }
+  );
+}
+  
 }

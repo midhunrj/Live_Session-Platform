@@ -1,23 +1,60 @@
 import { Request, Response } from "express";
-import { CreditsUsecase } from "../../application/usecases/SendCredits";
+import { CreditsUsecase } from "../../application/usecases/creditsUsecase";
 
 export class CreditController {
-
-  constructor(private sendingCredits: CreditsUsecase) {}
+  constructor(private creditsUsecase: CreditsUsecase) {}
 
   async send(req: Request, res: Response) {
-
     try {
+      const { senderId, sessionId,hostId, amount } = req.body;
+           console.log(req.body,"credit send request");
+           
+      if (!senderId || !sessionId || !amount) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "senderId, sessionId, and credits are required" 
+        });
+      }
 
-      const { senderId, sessionId, credits } = req.body;
+      await this.creditsUsecase.sendCredits(senderId, sessionId,hostId, amount);
+       console.log("passstatus in credits");
+       
+      res.status(200).json({ 
+        success: true,
+        message: "Credits sent successfully" 
+      });
 
-      await this.sendingCredits.sendCredits(senderId, sessionId, credits);
+    } catch (error: any) {
+      res.status(400).json({ 
+        success: false,
+        message: error.message 
+      });
+    }
+  }
 
-      res.json({ message: "Credits sent successfully" });
+  async getTransactions(req: Request, res: Response) {
+    try {
+      const { sessionId } = req.params;
 
-    } catch (error:any) {
+      if (!sessionId) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "sessionId is required" 
+        });
+      }
 
-      res.status(400).json({ message: error.message });
+      const transactions = await this.creditsUsecase.getTransactions(sessionId as string);
+         console.log("returning transactions",transactions);
+         
+      res.status(200).json({
+        success: true,
+        data: transactions
+      });
+    } catch (error: any) {
+      res.status(400).json({ 
+        success: false, 
+        message: error.message 
+      });
     }
   }
 }

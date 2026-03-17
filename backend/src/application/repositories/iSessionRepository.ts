@@ -8,8 +8,9 @@ export interface ISessionRepository {
     findActiveSessionByHost(hostId: string): Promise<Session | null>
     incrementViewers(sessionId:string):Promise<void>
     addCredits(sessionId:string,credits:number):Promise<void>
-
     addParticipant(sessionId:string,userId:string):Promise<SessionParticipant>
+    removeParticipant(sessionId: string, userId: string): Promise<void>
+    decrementViewers(sessionId: string): Promise<void>
 
 
 }

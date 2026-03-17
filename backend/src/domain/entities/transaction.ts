@@ -1,8 +1,8 @@
 export interface Transaction {
   _id?: string;
-  session_id: string;
-  sender_id: string;
-  host_id: string;
+  sessionId: string;
+  senderId: string;
+  hostId: string;
   credits: number;
   created_at: Date;
 }

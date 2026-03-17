@@ -7,15 +7,15 @@ export interface User {
   creditBalance?:number
 }
 export interface Session {
-  _id: string
-  host_id: string
-  title: string
-  description: string
-  status: "active" | "ended"
-  total_viewers: number
-  total_credits_received: number
-  started_at: string
-  ended_at?: string
+  _id?: string;
+  hostId: string;
+  title: string;          
+  description?: string;     
+  status: "active" | "ended";
+  startedAt: Date;
+  endedAt?: Date;
+  totalViewers: number;
+  totalCredits: number;
 }
 export interface Transaction {
   _id: string

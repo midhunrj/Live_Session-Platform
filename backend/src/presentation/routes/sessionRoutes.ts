@@ -26,17 +26,18 @@ const sessionController = new SessionController(
 
 sessionRouter.post("/create", sessionController.startSession.bind(sessionController));
 
+sessionRouter.get("/active", sessionController.getActiveSessions.bind(sessionController));
+
 sessionRouter.post("/:sessionId/end", sessionController.endSession.bind(sessionController));
 
 sessionRouter.post("/:sessionId/join", sessionController.joinSession.bind(sessionController));
 
-// sessionRouter.post("/:sessionId/leave", sessionController.leaveSession.bind(sessionController));
+sessionRouter.post("/:sessionId/leave", sessionController.leaveSession.bind(sessionController));
 
 sessionRouter.get("/:sessionId", sessionController.getSessionStats.bind(sessionController));
 
 sessionRouter.get("/:sessionId/viewers", sessionController.getViewerCount.bind(sessionController));
 
-sessionRouter.get("/active", sessionController.getActiveSessions.bind(sessionController));
 
 // sessionRouter.get("/host/:hostId", sessionController.getHostSessions.bind(sessionController));
 

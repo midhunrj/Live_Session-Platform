@@ -20,7 +20,7 @@ export class SignupUser {
       email,
       password: hashedPassword,
       role,
-      creditBalance: 100,
+      creditBalance: 1000,
       createdAt: new Date()
     }
 

@@ -17,12 +17,9 @@ const SessionCard=({ session, onJoin }: SessionCardProps)=> {
     return () => clearInterval(interval);
   }, [session._id]);
 
-   useEffect(() => {
-    loadViewers();
-  }, []);
 
   const loadViewers = async () => {
-    const count = await getViewerCount(session._id);
+    const count = await getViewerCount(session._id!);
     setViewerCount(count);
   };
   return (
@@ -59,7 +56,7 @@ const SessionCard=({ session, onJoin }: SessionCardProps)=> {
             <Coins size={16} />
             <span>Credits Received:</span>
           </div>
-          <span className="font-semibold text-slate-900">{session.total_credits_received}</span>
+          <span className="font-semibold text-slate-900">{session.totalCredits}</span>
         </div>
       </div>
 

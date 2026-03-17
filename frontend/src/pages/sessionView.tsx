@@ -23,12 +23,38 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [sessionStats, setSessionStats] = useState(session);
   const [participantId, setParticipantId] = useState<string | null>(null);
+  const [hasJoined,setHasJoined]=useState<Boolean>(false)
+
+  // useEffect(() => {
+  //   handleJoinSession();
+  //   loadViewerCount();
+  //   loadTransactions();
+  //   loadSessionStats();
+
+  //   const interval = setInterval(() => {
+  //     loadViewerCount();
+  //     loadSessionStats();
+  //     loadTransactions();
+  //   }, 3000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //     handleLeaveSession();
+  //   };
+  // }, []);
 
   useEffect(() => {
-    handleJoinSession();
-    loadViewerCount();
-    loadTransactions();
-    loadSessionStats();
+    // Only run once on mount
+    const initializeSession = async () => {
+      await handleJoinSession();
+      await Promise.all([
+        loadViewerCount(),
+        loadTransactions(),
+        loadSessionStats()
+      ]);
+    };
+
+    initializeSession();
 
     const interval = setInterval(() => {
       loadViewerCount();
@@ -38,15 +64,25 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
 
     return () => {
       clearInterval(interval);
-      handleLeaveSession();
+      // Only leave if we actually joined
+      if (hasJoined) {
+        handleLeaveSession();
+      }
     };
-  }, []);
-
+  }, []); 
+const getUserId = () => {
+  if (!user) return null;
+  return user.data?._id || user._id;
+};
   const handleJoinSession = async () => {
+    const userId=getUserId()
   if (!user) return;
 
   try {
-    await joinSession(session._id, user._id!);
+    console.log("userID +stong  data",user);
+    
+    const res=await joinSession(session._id!, userId!);
+    setHasJoined(true)
   } catch (error) {
     console.error("Failed to join session");
   }
@@ -54,10 +90,15 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
 
 
  const handleLeaveSession = async () => {
+  const userId = getUserId();
   if (!user) return;
 
   try {
-    await leaveSession(session._id!, user?._id!);
+
+    console.log("user.Id",user._id);
+    
+    await leaveSession(session._id!, userId!);
+    setHasJoined(false)
   } catch (error) {
     console.error("Failed to leave session");
   }
@@ -65,7 +106,7 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
 
   const loadViewerCount = async () => {
   try {
-    const count = await getViewerCount(session._id);
+    const count = await getViewerCount(session._id!);
     setViewerCount(count);
   } catch (error) {
     console.error("Viewer count error");
@@ -73,7 +114,7 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
 };
   const loadSessionStats = async () => {
   try {
-    const data = await getSessionStats(session._id);
+    const data = await getSessionStats(session._id!);
     setSessionStats(data);
   } catch (error) {
     console.error("Session stats error");
@@ -81,8 +122,10 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
 };
   const loadTransactions = async () => {
   try {
-    const data = await getTransactions(session._id);
-    setTransactions(data);
+    const transactData = await getTransactions(session._id!);
+    console.log("transactdata",transactData);
+    
+    setTransactions(transactData.data!);
   } catch (error) {
     console.error("Transaction load error");
   }
@@ -107,7 +150,10 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
   setError("");
 
   try {
-    await sendCredits(session._id, user._id!, session.host_id, amount);
+    const userId=user.data._id
+    console.log(session,"session data");
+    
+    await sendCredits(session._id!, userId!, session.hostId, amount);
 
     setSuccess(`Sent ${amount} credits`);
     setCreditAmount("");
@@ -159,14 +205,14 @@ const  SessionView=({ session, onBack }: SessionViewProps)=> {
                     <TrendingUp className="text-green-600" size={20} />
                     <span className="text-sm font-medium text-slate-600">Total Viewers</span>
                   </div>
-                  <p className="text-2xl font-bold text-slate-900">{sessionStats.total_viewers}</p>
+                  <p className="text-2xl font-bold text-slate-900">{sessionStats.totalViewers}</p>
                 </div>
                 <div className="bg-yellow-50 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Coins className="text-yellow-600" size={20} />
                     <span className="text-sm font-medium text-slate-600">Credits</span>
                   </div>
-                  <p className="text-2xl font-bold text-slate-900">{sessionStats.total_credits_received}</p>
+                  <p className="text-2xl font-bold text-slate-900">{sessionStats.totalCredits}</p>
                 </div>
               </div>
             </div>
