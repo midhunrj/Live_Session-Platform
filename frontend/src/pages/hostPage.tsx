@@ -24,67 +24,6 @@ const HostPage = () => {
     
     return user?.data?._id || user?._id;
   };
-//   useEffect(() => {
-//   if (!activeSession?._id) return;
-
-//   const interval = setInterval(async () => {
-//     const res = await getSessionStats(activeSession?._id!);
-//     setActiveViewers(res.data.totalViewers);
-//   }, 3000);
-
-//   return () => clearInterval(interval);
-// }, [activeSession]);
-
-// useEffect(() => {
-//   if (!activeSession?._id) return;
-
-//   const fetchParticipants = async () => {
-//     const res = await getParticipants(activeSession._id!);
-//     setParticipants(res.data);
-//   };
-
-//   fetchParticipants();
-// }, [activeSession]);
-
-// useEffect(() => {
-//   if (!activeSession?._id) return;
-
-//   const interval = setInterval(async () => {
-
-//     try {
-//       const statsRes = await getSessionStats(activeSession._id!);
-//       console.log(statsRes,"status response");
-      
-//       setActiveViewers(statsRes.data.totalViewers);
-
-//       setActiveSession(prev =>
-//         prev ? {
-//           ...prev,
-//           totalCredits: statsRes.data.totalCredits,
-//           totalViewers: statsRes.data.totalViewers
-//         } : prev
-//       );
-
-//     } catch (err) {
-//       console.error("Stats error", err);
-//     }
-
-//     try {
-//       console.log("heiloo");
-      
-//       const participantsRes = await getParticipants(activeSession._id!);
-//       console.log("participant response",participantsRes);
-      
-//       setParticipants(participantsRes.data);
-//     } catch (err) {
-//       console.error("Participants error", err);
-//     }
-
-//   }, 3000);
-
-//   return () => clearInterval(interval);
-
-// }, [activeSession]);
 
 useEffect(() => {
   if (!activeSession?._id) return;
@@ -127,41 +66,6 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [activeSession]);
 
-//   useEffect(() => {
-
-//   const fetchSessions = async () => {
-
-//     const hostId = getRealUserId();
-
-//     if (!hostId) return;
-
-//     const res = await getHostSessions(hostId);
-//       console.log(res,"result of sessions by host")
-//     setSessions(...sessions,res?.data);
-
-//   };
-
-//   fetchSessions();
-
-// }, []);
-
-// useEffect(() => {
-//   const fetchSessions = async () => {
-//     const hostId = getRealUserId();
-//     if (!hostId) return;
-
-//     const res = await getHostSessions(hostId);
-//     setSessions(res.data);
-
-//     // Restore active session
-//     const active = res.data.find((s: Session) => s.status === "active");
-//     if (active) {
-//       setActiveSession(active);
-//     }
-//   };
-
-//   fetchSessions();
-// }, []);
 
 useEffect(() => {
   const fetchSessions = async () => {

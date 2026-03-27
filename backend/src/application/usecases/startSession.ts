@@ -15,13 +15,13 @@ export class StartingSessionUsecase {
 console.log("jknkjnkj");
 
     const newSessionData =  {
-      hostId: hostId, // Use the hostId parameter, not from sessionData
+      hostId: hostId, 
       title: sessionData.title,
       description: sessionData.description,
       status: "active" as "active",
-      startedAt:  sessionData.started_at || new Date(),
-      totalViewers: sessionData.total_viewers || sessionData.totalViewers || 0,
-      totalCredits: sessionData.total_credits_received || sessionData.totalCredits || 0
+      startedAt:  sessionData.startedAt || new Date(),
+      totalViewers:  sessionData.totalViewers || 0,
+      totalCredits:  sessionData.totalCredits || 0
     };
     return await this.sessionRepo.createSession(newSessionData);
   }

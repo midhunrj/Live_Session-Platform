@@ -30,9 +30,13 @@ export class UserController {
         data: user
       })
 
-    } catch (error) {
-      next(error)
+    } catch (error:any) {
+     return res.status(400).json({
+        success: false,
+        message: error.message || "Signup failed",
+      });
     }
+    
 
   }
 
@@ -49,8 +53,11 @@ console.log(req.body,"request of login")
         data: user
       })
 
-    } catch (error) {
-      next(error)
+    } catch (error:any) {
+       return res.status(400).json({
+        success: false,
+        message: error.message || "Login failed",
+      });
     }
 
   }

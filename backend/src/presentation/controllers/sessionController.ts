@@ -13,20 +13,7 @@ export class SessionController {
     private sessionStats: SessionStats
   ) {}
 
-  // async start(req: Request, res: Response) {
-
-  //   try {
-  //     const { hostId } = req.body;
-
-  //     const session = await this.startingSession.startSession(hostId);
-
-  //     res.json(session);
-
-  //   } catch (error:any) {
-
-  //     res.status(400).json({ message: error.message });
-  //   }
-  // }
+  
    async startSession (req: Request, res: Response) {
     try {
 
